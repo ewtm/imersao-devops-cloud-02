@@ -39,10 +39,14 @@ jobs:
         aws-region: us-east-1
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_ID }}
-    - name: Autenticar na AWS
-      run: echo "Autenticar na AWS"
     - name: Configurar o KubeConfig
-      run: echo "Configurar o KubeConfig"
-    - name: Aplicar o deploy
-      run: echo "Executar o Kubectl apply"
+      run: aws eks update-kubeconfig --name eks-imersa --region us-east-1
+    - name: Deploy to Kubernetes cluster
+      uses: Azure/k8s-deploy@v4.9
+      with:
+        manifests: |
+          ./kube-news/k8s/deployment.yaml
+        images: |
+          ewtm/kube-news:${{ github.run_number }}
+          
   
